@@ -18,7 +18,6 @@ def get_db():
         db = psycopg2.connect(os.environ.get("DATABASE_URL"))
     return db
 
-# 🔐 LOGIN CHECK DECORATOR
 from functools import wraps
 
 def admin_required(f):
