@@ -6,13 +6,9 @@ import os
 
 app = Flask(__name__)
 
-# 🔐 SECRET KEY (required for sessions)
 app.secret_key = os.environ.get("SECRET_KEY", "dev_secret")
-
-# Database connection
 db = psycopg2.connect(os.environ.get("DATABASE_URL"))
 
-# 🔥 FIX: auto reconnect
 def get_db():
     global db
     try:
@@ -60,7 +56,7 @@ def login():
             cursor.close()
 
         if user:
-            session['admin_id'] = user[0]  # ✅ store session
+            session['admin_id'] = user[0] 
             return redirect(url_for('dashboard'))
         else:
             return "Invalid email or password"
@@ -316,10 +312,5 @@ def facultyView():
         total_exams=total_exams,
         recent_papers=recent_papers
     )
-
-@app.route('/google12345abc.html')
-def verify():
-    return send_from_directory('static', 'googleeba5f3f28747c941.html')
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
