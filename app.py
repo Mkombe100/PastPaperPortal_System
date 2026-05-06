@@ -316,5 +316,7 @@ def facultyView():
 def handle_500(error):
     return render_template("error_refresh.html"), 500
 
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
