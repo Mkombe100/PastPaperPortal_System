@@ -10,6 +10,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev_secret")
 db = psycopg2.connect(os.environ.get("DATABASE_URL"))
 
 
+
 def get_db():
     global db
     try:
