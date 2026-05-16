@@ -89,6 +89,7 @@ def addFaculty():
 def addCourse():
     conn = get_db()
     cursor = conn.cursor()
+
     try:
         cursor.execute("SELECT faculty_id, faculty_name FROM faculty")
         faculties = cursor.fetchall()
@@ -100,10 +101,27 @@ def addCourse():
             semester = request.form.get('semester')
             faculty_id = request.form.get('faculty_id')
 
+            # CHECK IF COURSE CODE EXISTS
+            check_sql = "SELECT * FROM course WHERE course_code = %s"
+            cursor.execute(check_sql, (course_code,))
+            existing_course = cursor.fetchone()
+
+            if existing_course:
+                return "<script>alert('Course code already added');window.location='/addCourse'</script>"
+
+            # INSERT COURSE
             sql = """INSERT INTO course 
                      (course_code, course_name, year_of_study, semester, faculty_id)
                      VALUES (%s,%s,%s,%s,%s)"""
-            cursor.execute(sql,(course_code,course_name,year_of_study,semester,faculty_id))
+
+            cursor.execute(sql, (
+                course_code,
+                course_name,
+                year_of_study,
+                semester,
+                faculty_id
+            ))
+
             conn.commit()
 
             return "<script>alert('Course Added Successfully');window.location='/addCourse'</script>"
@@ -112,6 +130,7 @@ def addCourse():
         cursor.close()
 
     return render_template('addCourse.html', faculties=faculties)
+
 
 @app.route('/addPastPaper', methods=['GET','POST'])
 @admin_required
