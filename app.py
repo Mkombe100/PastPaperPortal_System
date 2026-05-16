@@ -66,24 +66,40 @@ def login():
 @app.route('/addFaculty', methods=['GET','POST'])
 @admin_required
 def addFaculty():
+
     if request.method == 'POST':
         facultyName = request.form.get('facultyName')
 
         if not facultyName:
-            return 'No party Broo'
+            return 'No faculty name provided'
 
         conn = get_db()
         cursor = conn.cursor()
+
         try:
-            cursor.execute("INSERT INTO faculty (faculty_name) VALUES (%s)", (facultyName,))
+            # CHECK IF FACULTY EXISTS
+            check_sql = "SELECT * FROM faculty WHERE faculty_name = %s"
+            cursor.execute(check_sql, (facultyName,))
+            existing_faculty = cursor.fetchone()
+
+            if existing_faculty:
+                return "<script>alert('Faculty already added');window.location='/addFaculty'</script>"
+
+            # INSERT FACULTY
+            cursor.execute(
+                "INSERT INTO faculty (faculty_name) VALUES (%s)",
+                (facultyName,)
+            )
+
             conn.commit()
+
+            return "<script>alert('Faculty added successfully');window.location='/addFaculty'</script>"
+
         finally:
             cursor.close()
 
-        return 'faculty added succesfully'
-
     return render_template('addFaculty.html')
-
+ 
 @app.route('/addCourse', methods=['GET','POST'])
 @admin_required
 def addCourse():
