@@ -352,6 +352,25 @@ def handle_500(error):
     return render_template("error_refresh.html"), 500
 
 
+@app.route('/comments', methods=['GET', 'POST'])
+def comments():
+    if request.method == 'POST':
+        email = request.form['email']
+        content = request.form['content']
+
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "INSERT INTO comments (email, content) VALUES (%s, %s)",
+            (email, content)
+        )
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return render_template('facultyView.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
